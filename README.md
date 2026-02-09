@@ -4,51 +4,51 @@ Final capstone project for MS in Data Science and Business Analytics
 Project Members: Owen Williamson, Anders Pierson, Baran Narravula, Declan O'Halloran, and Rituparna Bhattacharya 
 
 
-Overview
+**Overview**
 This project is an intelligence-driven fraud R&D pipeline designed to identify emerging financial fraud patterns using publicly available data sources. The system focuses on early signal detection, trend analysis, and contextual insights to support proactive fraud research.
 
-Product Goals
+**Product Goals**
 - Detect emerging fraud patterns from public consumer and regulatory data
 - Aggregate signals across multiple authoritative sources
 - Support fraud research through structured analysis and visualization
   
 
-Scope Boundaries
-**In Scope**
+**Scope Boundaries**
+**In Scope:**
 - Public fraud and complaint data analysis
 - Trend identification and exploratory analytics
 - Research-oriented insights and visualization
 
-**Out of Scope**
+**Out of Scope:**
 - Real-time transaction-level fraud detection
 - Production-grade ML deployment
 - Access to proprietary or sensitive data
 
 
- High-Level Workflow
+ **High-Level Workflow**
 1. Ingest public fraud-related datasets
 2. Clean and normalize data across sources
 3. Perform exploratory and trend-based analysis
 4. Generate insights on emerging fraud patterns
 
 
-MVP Constraints
+**MVP Constraints**
 - Uses only publicly available and aggregated data
 - AI/LLM usage limited by API capacity and cost constraints
 - Focused on research feasibility rather than production scalability
 
-Technology Stack
-**Current**
+**Technology Stack**
+**Current:**
 - Python (Pandas, NumPy)
 - Jupyter Notebook
 - Data visualization libraries
 
-**Exploratory**
+**Exploratory:**
 - LLM APIs for research augmentation
 - Supabase for data storage and visualization
 
 
-Data Sources
+**Data Sources**
 
 We selected a mix of authoritative government datasets and industry research sources to ensure our analysis is based on real-world, ethical, and reliable information.
 - Federal Trade Commission (FTC): Consumer-reported fraud and identity theft data, including scam types, financial losses, and demographic trends. Chosen for its credibility and real-world relevance.
