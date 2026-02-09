@@ -49,10 +49,11 @@ Technology Stack
 
 
 Data Sources
+
 We selected a mix of authoritative government datasets and industry research sources to ensure our analysis is based on real-world, ethical, and reliable information.
-Federal Trade Commission (FTC): Consumer-reported fraud and identity theft data, including scam types, financial losses, and demographic trends. Chosen for its credibility and real-world relevance.
-Consumer Financial Protection Bureau (CFPB): Structured consumer complaint data related to financial products and fraud. Selected for clean, well-documented CSV data suitable for analysis and modeling.
-Office of the Comptroller of the Currency (OCC): Banking performance and risk indicators. Used to provide system-level context to consumer fraud trends.
-Financial Crimes Enforcement Network (FinCEN): Aggregated reports on financial crime and AML trends. Included to understand national-level fraud patterns.
-Financial Industry Regulatory Authority (FINRA): Enforcement and regulatory data related to securities markets. Adds an investment and market-fraud perspective.
-**PYMNTS & Outseer: Industry research and reports used for qualitative context and interpretation of fraud and payments trends.
+- Federal Trade Commission (FTC): Consumer-reported fraud and identity theft data, including scam types, financial losses, and demographic trends. Chosen for its credibility and real-world relevance.
+- Consumer Financial Protection Bureau (CFPB): Structured consumer complaint data related to financial products and fraud. Selected for clean, well-documented CSV data suitable for analysis and modeling.
+- Office of the Comptroller of the Currency (OCC): Banking performance and risk indicators. Used to provide system-level context to consumer fraud trends.
+- Financial Crimes Enforcement Network (FinCEN): Aggregated reports on financial crime and AML trends. Included to understand national-level fraud patterns.
+- Financial Industry Regulatory Authority (FINRA): Enforcement and regulatory data related to securities markets. Adds an investment and market-fraud perspective.
+- PYMNTS & Outseer: Industry research and reports used for qualitative context and interpretation of fraud and payments trends.
