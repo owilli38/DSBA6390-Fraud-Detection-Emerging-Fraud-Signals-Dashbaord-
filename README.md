@@ -48,6 +48,45 @@ This project is an intelligence-driven fraud R&D pipeline designed to identify e
 - Supabase for data storage and visualization
 
 
+**Fraud Signal Processing & Embedding Pipeline**
+
+To support emerging fraud signal detection, we built a lightweight pipeline that converts public fraud datasets into searchable embeddings, ranked signals, and explainable insights.
+
+**Pipeline Steps**
+**Data Ingestion & Cleaning**
+- Public datasets (FTC, CFPB, OCC, etc.) are loaded from CSV, JSON, and text sources. All records are converted into standardized natural language text and cleaned so everything is consistent across sources.
+**Embedding Generation (Gemini)**
+- Each record is converted into a semantic embedding using Google Gemini embedding models so fraud cases can be compared based on meaning instead of keywords.
+**Supabase Backend Storage**
+- Cleaned records and embeddings are stored in Supabase to support structured queries, storage, and integration with the Python pipeline.
+**Similarity Search & Retrieval**
+- Vector similarity search is used to find related fraud cases and surface clusters of similar activity.
+**ML Ranking & Severity Classification**
+- Random Forest models are used to:
+- Rank fraud signals by importance
+- Classify severity (Low, Medium, High)
+**RAG-Based Fraud Insights (Gemini LLM)**
+- Retrieved records are passed into a Gemini-based RAG workflow to generate short summaries, patterns, and evidence-backed insights.
+
+
+**Output**
+Each generated fraud signal includes:
+- document ID
+- similarity score
+- supporting text evidence
+- severity classification
+- ranking score
+
+This output feeds directly into dashboards and research analysis.
+
+
+**Current Progress**
+- Built ingestion pipeline for FTC and CFPB datasets
+- Implemented Supabase backend and validated read/write from Python
+- Generated embeddings using Gemini API
+- Ran initial fraud signal similarity search and ranking models
+- Integrated early-stage RAG workflow for fraud insight generation
+
 **Data Sources**
 
 We selected a mix of authoritative government datasets and industry research sources to ensure our analysis is based on real-world, ethical, and reliable information.
