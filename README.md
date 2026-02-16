@@ -68,6 +68,28 @@ To support emerging fraud signal detection, we built a lightweight pipeline that
 **RAG-Based Fraud Insights (Gemini LLM)**
 - Retrieved records are passed into a Gemini-based RAG workflow to generate short summaries, patterns, and evidence-backed insights.
 
+**Supabase Backend Integration**
+
+To support storage and querying outside of the notebook, we set up a Supabase backend that connects directly to our Python workflow.
+
+- Cleaned fraud records and embeddings are inserted into Supabase tables
+- Read and write operations were tested and validated from Python
+- Stored records include document ID, text content, and embedding data
+- Queries return structured data that can be used for similarity search, ranking, and RAG steps
+
+This allows us to move beyond local notebook storage and keep all fraud records in one place that the rest of the system can access.
+
+**How it fits into the workflow**
+1. Cleaned fraud data is created in Python
+2. Records and embeddings are inserted into Supabase
+3. Supabase stores the data with unique IDs
+4. The query layer retrieves records for:
+  - similarity search
+  - model ranking
+  - RAG-based insights
+
+This backend layer keeps the data organized and makes it easier to connect the modeling pipeline to a future dashboard.
+
 
 **Output**
 Each generated fraud signal includes:
@@ -82,10 +104,11 @@ This output feeds directly into dashboards and research analysis.
 
 **Current Progress**
 - Built ingestion pipeline for FTC and CFPB datasets
-- Implemented Supabase backend and validated read/write from Python
-- Generated embeddings using Gemini API
-- Ran initial fraud signal similarity search and ranking models
-- Integrated early-stage RAG workflow for fraud insight generation
+- Cleaned and standardized data for consistent processing
+- Set up Supabase backend and confirmed read/write from Python
+- Generated embeddings using the Gemini API
+- Ran initial similarity search and ranking models on fraud records
+- Integrated an early-stage RAG workflow for summarizing fraud signals
 
 **Data Sources**
 
