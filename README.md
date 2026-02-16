@@ -58,7 +58,7 @@ To support emerging fraud signal detection, we built a lightweight pipeline that
 **Embedding Generation (Gemini)**
 - Each record is converted into a semantic embedding using Google Gemini embedding models so fraud cases can be compared based on meaning instead of keywords.
 **Supabase Backend Storage**
-- Cleaned records and embeddings are stored in Supabase to support structured queries, storage, and integration with the Python pipeline.
+- Embeddings and cleaned records are stored in Supabase for retrieval and downstream modeling
 **Similarity Search & Retrieval**
 - Vector similarity search is used to find related fraud cases and surface clusters of similar activity.
 **ML Ranking & Severity Classification**
