@@ -57,10 +57,20 @@ To support emerging fraud signal detection, we built a lightweight pipeline that
 - Public datasets (FTC, CFPB, OCC, etc.) are loaded from CSV, JSON, and text sources. All records are converted into standardized natural language text and cleaned so everything is consistent across sources.
 **Embedding Generation (Gemini)**
 - Each record is converted into a semantic embedding using Google Gemini embedding models so fraud cases can be compared based on meaning instead of keywords.
+- BERT creates embeddings for 
 **Supabase Backend Storage**
 - Embeddings and cleaned records are stored in Supabase for retrieval and downstream modeling
 **Similarity Search & Retrieval**
 - Vector similarity search is used to find related fraud cases and surface clusters of similar activity.
+- DBSCAN finds clusters and noise that could indicate specific trends in fraud emergence
+**Unique Measurements for Emerging Threats**
+  - Drift measures the change in the clusters centroid movement, which can indicate changes to emerging threat (i.e, phone scams become AI-powered phone scams)
+  - Growth measures number of new articles within the cluster
+  - Acceleration measures the difference in growth from previous week to current week to signify if topic is becoming a growing/decline threat
+  - Age Days is used to classify the newness of a fraud threat
+        - 0-30 Days is "Emerging"
+        - 30-90 Days is "Trending"
+        - Beyond 180 Days is "Established"
 **ML Ranking & Severity Classification**
 - Random Forest models are used to:
 - Rank fraud signals by importance
@@ -85,7 +95,7 @@ This allows us to move beyond local notebook storage and keep all fraud records 
 3. Supabase stores the data with unique IDs
 4. The query layer retrieves records for:
   - similarity search
-  - model ranking
+  - BERT embeddings + DBSCAN to link emerging threats
   - RAG-based insights
 
 This backend layer keeps the data organized and makes it easier to connect the modeling pipeline to a future dashboard.
