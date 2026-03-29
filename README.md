@@ -129,3 +129,6 @@ We selected a mix of authoritative government datasets and industry research sou
 - Financial Crimes Enforcement Network (FinCEN): Aggregated reports on financial crime and AML trends. Included to understand national-level fraud patterns.
 - Financial Industry Regulatory Authority (FINRA): Enforcement and regulatory data related to securities markets. Adds an investment and market-fraud perspective.
 - PYMNTS & Outseer: Industry research and reports used for qualitative context and interpretation of fraud and payments trends.
+- ABA (American Bankers Association): Provides industry reports and insights on banking trends, fraud risks, and regulatory developments used to inform fraud signal extraction.
+- BPI (Bank Policy Institute): Offers research and policy analysis on financial systems, fraud patterns, and banking operations to support data-driven fraud detection modeling.
+
