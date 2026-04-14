@@ -1,15 +1,16 @@
 import streamlit as st
 import requests
+import pandas as pd
 
 # --------------------------------------------
-# API Endpoints
+# API ENDPOINTS
 # --------------------------------------------
 
 RAG_API = "http://127.0.0.1:8000/rag"
 LATEST_API = "http://127.0.0.1:8000/latest"
 
 # --------------------------------------------
-# Page Setup
+# PAGE SETUP
 # --------------------------------------------
 
 st.set_page_config(
@@ -18,38 +19,28 @@ st.set_page_config(
 )
 
 # --------------------------------------------
-# Clean Professional Styling
+# STYLING
 # --------------------------------------------
 
 st.markdown("""
 <style>
 
-/* hide default streamlit elements */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* page spacing */
 .block-container {
     padding-top: 2rem;
 }
 
-/* card layout */
 .card {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
     border: 1px solid #e6e6e6;
-    height: 180px;
-    transition: all .15s ease;
+    height: 200px;
 }
 
-.card:hover {
-    border-color: #4A90E2;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
-
-/* card text */
 .card-title {
     font-size: 17px;
     font-weight: 600;
@@ -68,7 +59,6 @@ header {visibility: hidden;}
     text-decoration: none;
 }
 
-/* AI answer box */
 .answer-box {
     background-color: #f9fafc;
     border: 1px solid #e6e6e6;
@@ -81,132 +71,148 @@ header {visibility: hidden;}
 """, unsafe_allow_html=True)
 
 # --------------------------------------------
-# Title
+# TITLE
 # --------------------------------------------
 
 st.title("Fraud Intelligence Platform")
-
-st.markdown(
-    "Search fraud intelligence reports and retrieve relevant investigative articles."
-)
+st.markdown("Dual-mode fraud intelligence: investigation + threat monitoring")
 
 st.divider()
 
 # --------------------------------------------
-# Search Section
+# TABS (KEY CHANGE)
 # --------------------------------------------
 
-st.subheader("Intelligence Search")
+tab1, tab2 = st.tabs(["🔎 Investigate", "📈 Threat Timeline"])
 
-col1, col2, col3 = st.columns([1,3,1])
+# =========================================================
+# TAB 1 — INVESTIGATION (RAG SEARCH)
+# =========================================================
 
-with col2:
+with tab1:
 
-    query = st.text_input(
-        "",
-        placeholder="Search fraud schemes, actors, organizations..."
-    )
+    st.subheader("Intelligence Search")
 
-    top_k = st.slider(
-        "Documents to retrieve",
-        1,
-        10,
-        5
-    )
+    col1, col2, col3 = st.columns([1,3,1])
 
-    search_button = st.button("Analyze Intelligence")
+    with col2:
 
-st.divider()
+        query = st.text_input(
+            "",
+            placeholder="Search fraud schemes, actors, organizations..."
+        )
 
-# --------------------------------------------
-# RAG Search Results
-# --------------------------------------------
+        top_k = st.slider("Documents to retrieve", 1, 10, 5)
 
-if search_button and query:
+        search_button = st.button("Analyze Intelligence")
 
-    payload = {
-        "query": query,
-        "top_k": top_k
-    }
+    st.divider()
 
-    with st.spinner("Analyzing fraud intelligence..."):
+    if search_button and query:
 
-        response = requests.post(RAG_API, json=payload)
+        payload = {
+            "query": query,
+            "top_k": top_k
+        }
 
-        if response.status_code == 200:
+        with st.spinner("Analyzing fraud intelligence..."):
 
-            data = response.json()
+            response = requests.post(RAG_API, json=payload)
 
-            st.subheader("AI Generated Intelligence")
+            if response.status_code == 200:
 
-            st.markdown(f"""
-            <div class="answer-box">
-            {data["answer"]}
-            </div>
-            """, unsafe_allow_html=True)
+                data = response.json()
+                sources = data["sources"]
 
-            st.divider()
-
-            st.subheader("Supporting Articles")
-
-            for src in data["sources"]:
+                st.subheader("AI Intelligence Report")
 
                 st.markdown(f"""
-                <div class="card">
-                    <div class="card-title">{src["title"]}</div>
-                    <div class="card-date">Source Article</div>
-                    <a class="card-link" href="{src["url"]}" target="_blank">
-                        Read Article →
-                    </a>
+                <div class="answer-box">
+                {data["answer"]}
                 </div>
                 """, unsafe_allow_html=True)
 
-        else:
+                st.divider()
 
-            st.error("Error contacting the RAG API")
+                st.subheader("Supporting Articles")
 
-# --------------------------------------------
-# Default Page: Latest Articles Grid
-# --------------------------------------------
+                for src in sources:
 
-else:
+                    st.markdown(f"""
+                    <div class="card">
+                        <div class="card-title">{src["title"]}</div>
+                        <div class="card-date">
+                            Theme: {src.get("theme_label","Unknown")}<br>
+                            Stage: {src.get("stage","Unknown")}<br>
+                            Risk Score: {src.get("risk_score","Unknown")}
+                        </div>
+                        <a class="card-link" href="{src["url"]}" target="_blank">
+                            Read Article →
+                        </a>
+                    </div>
+                    """, unsafe_allow_html=True)
 
-    st.subheader("Latest Fraud Intelligence")
+            else:
+                st.error("Error contacting RAG API")
+
+# =========================================================
+# TAB 2 — THREAT TIMELINE DASHBOARD
+# =========================================================
+
+with tab2:
+
+    st.subheader("Fraud Threat Timeline (Real Intelligence View)")
 
     try:
-
-        response = requests.get(LATEST_API)
+        response = requests.get("http://127.0.0.1:8000/timeline")
 
         if response.status_code == 200:
 
-            articles = response.json()["articles"]
+            articles = response.json()["timeline"]
 
-            articles = articles[:6]
+            if not articles:
+                st.warning("No timeline data available")
+            else:
 
-            rows = [articles[i:i+3] for i in range(0, len(articles), 3)]
+                df = pd.DataFrame(articles)
 
-            for row in rows:
+                df["publish_timestamp"] = pd.to_datetime(
+                    df["publish_timestamp"],
+                    errors="coerce"
+                )
 
-                cols = st.columns(3)
+                df = df.dropna(subset=["publish_timestamp"])
 
-                for col, article in zip(cols, row):
+                df["date"] = df["publish_timestamp"].dt.date
 
-                    with col:
+                # 🔥 REAL THREAT SIGNAL: risk-weighted activity
+                df["risk_score"] = df["risk_score"].fillna(0)
 
-                        st.markdown(f"""
-                        <div class="card">
-                            <div class="card-title">{article["title"]}</div>
-                            <div class="card-date">{article["publish_timestamp"]}</div>
-                            <a class="card-link" href="{article["url"]}" target="_blank">
-                                Read Article →
-                            </a>
+                trend = df.groupby("date")["risk_score"].mean().reset_index()
+
+                st.line_chart(trend.set_index("date")["risk_score"])
+
+                st.divider()
+
+                st.subheader("Latest Threat Intelligence Feed")
+
+                for item in articles[:6]:
+
+                    st.markdown(f"""
+                    <div class="card">
+                        <div class="card-title">{item["title"]}</div>
+                        <div class="card-date">
+                            Theme: {item.get("theme_label","Unknown")}<br>
+                            Risk: {item.get("risk_score","Unknown")}
                         </div>
-                        """, unsafe_allow_html=True)
+                        <a class="card-link" href="{item["url"]}" target="_blank">
+                            Read Article →
+                        </a>
+                    </div>
+                    """, unsafe_allow_html=True)
 
         else:
+            st.warning("Failed to load timeline data")
 
-            st.warning("Could not load articles.")
-
-    except:
-
-        st.warning("Backend not available.")
+    except Exception as e:
+        st.error(f"Timeline error: {e}")
