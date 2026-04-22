@@ -65,7 +65,7 @@ Before embeddings are generated, all raw datasets are processed through a data i
 - Data is loaded from CSV, JSON, and text sources (FTC, CFPB, OCC, etc.)
 - News and blog sites are scrapped on a batch, daily schedule for retrieving new articles with relevant metadata 
 - Records are standardized into a unified schema
-- Text fields are cleaned and normalized for consistency
+- Text fields are cleaned and normalized for consistency: lower casing and normalizing white space
 - Duplicate records are removed using unique identifiers
 - Missing or incomplete records are filtered out
 - 
@@ -87,10 +87,16 @@ This ensures all downstream embedding and modeling steps operate on clean, struc
         - 0-30 Days is "Emerging"
         - 30-90 Days is "Trending"
         - Beyond 180 Days is "Established"
-**ML Ranking & Severity Classification**
-- Random Forest models are used to:
-- Rank fraud signals by importance
-- Classify severity (Low, Medium, High)
+**Cluster Tracking & Stage Labeling**
+Each processed fraud signal includes:
+- document ID
+- source
+- cleaned text
+- embedding representation
+- cluster assignment
+- supporting article or nearest representative article
+- temporal metrics such as growth, drift, acceleration, and age_days
+- stage label (for example: Emerging, Trending, Stable, or Established)
 **RAG-Based Fraud Insights (Gemini LLM)**
 - Retrieved records are passed into a Gemini-based RAG workflow to generate short summaries, patterns, and evidence-backed insights.
 
@@ -139,13 +145,10 @@ This output feeds directly into dashboards and research analysis.
 
 **Data Sources**
 
-We selected a mix of authoritative government datasets and industry research sources to ensure our analysis is based on real-world, ethical, and reliable information.
-- Federal Trade Commission (FTC): Consumer-reported fraud and identity theft data, including scam types, financial losses, and demographic trends. Chosen for its credibility and real-world relevance.
-- Consumer Financial Protection Bureau (CFPB): Structured consumer complaint data related to financial products and fraud. Selected for clean, well-documented CSV data suitable for analysis and modeling.
-- Office of the Comptroller of the Currency (OCC): Banking performance and risk indicators. Used to provide system-level context to consumer fraud trends.
-- Financial Crimes Enforcement Network (FinCEN): Aggregated reports on financial crime and AML trends. Included to understand national-level fraud patterns.
-- Financial Industry Regulatory Authority (FINRA): Enforcement and regulatory data related to securities markets. Adds an investment and market-fraud perspective.
-- PYMNTS & Outseer: Industry research and reports used for qualitative context and interpretation of fraud and payments trends.
-- ABA (American Bankers Association): Provides industry reports and insights on banking trends, fraud risks, and regulatory developments used to inform fraud signal extraction.
-- BPI (Bank Policy Institute): Offers research and policy analysis on financial systems, fraud patterns, and banking operations to support data-driven fraud detection modeling.
+We use publicly available news and blog content from four primary sources:
+- ABA (American Bankers Association)
+- PYMNTS
+- TechCrunch
+- ACFE (Association of Certified Fraud Examiners)
 
+These sources were selected to provide a mix of banking, payments, fraud, and technology coverage for identifying emerging fraud-related patterns.
