@@ -26,10 +26,12 @@ This project is an intelligence-driven fraud R&D pipeline designed to identify e
 
 
  **High-Level Workflow**
-1. Ingest public fraud-related datasets
-2. Clean and normalize data across sources
-3. Perform exploratory and trend-based analysis
-4. Generate insights on emerging fraud patterns
+1. Ingest public fraud-related datasets (Data Pipeline)
+2. Clean and normalize data across sources (Data Pipeline)
+3. Store structured data in Supabase for downstream use
+4. Generate semantic embeddings and representations (Embedding Pipeline)
+5. Cluster and analyze fraud signals over time
+6. Generate insights on emerging fraud patterns
 
 
 **MVP Constraints**
@@ -42,6 +44,10 @@ This project is an intelligence-driven fraud R&D pipeline designed to identify e
 - Python (Pandas, NumPy)
 - Jupyter Notebook
 - Data visualization libraries
+- Supabase (data storage and retrieval)
+- Google Gemini API (embedding generation)
+- Hugging Face Transformers (BERT embeddings)
+- Scikit-learn (clustering, preprocessing)
 
 **Exploratory:**
 - LLM APIs for research augmentation
@@ -50,19 +56,29 @@ This project is an intelligence-driven fraud R&D pipeline designed to identify e
 
 **Fraud Signal Processing & Embedding Pipeline**
 
-To support emerging fraud signal detection, we built a lightweight pipeline that converts public fraud datasets into searchable embeddings, ranked signals, and explainable insights.
+To support emerging fraud signal detection, we built a lightweight pipeline that converts cleaned fraud datasets into semantic embeddings, clustered signals, and explainable insights.
 
 **Pipeline Steps**
 **Data Ingestion & Cleaning**
-- Public datasets (FTC, CFPB, OCC, etc.) are loaded from CSV, JSON, and text sources. All records are converted into standardized natural language text and cleaned so everything is consistent across sources.
+Before embeddings are generated, all raw datasets are processed through a data ingestion pipeline:
+
+- Data is loaded from CSV, JSON, and text sources (FTC, CFPB, OCC, etc.)
+- News and blog sites are scrapped on a batch, daily schedule for retrieving new articles with relevant metadata 
+- Records are standardized into a unified schema
+- Text fields are cleaned and normalized for consistency
+- Duplicate records are removed using unique identifiers
+- Missing or incomplete records are filtered out
+- 
+This ensures all downstream embedding and modeling steps operate on clean, structured data.
+
 **Embedding Generation (Gemini)**
 - Each record is converted into a semantic embedding using Google Gemini embedding models so fraud cases can be compared based on meaning instead of keywords.
-- BERT creates embeddings for 
+- BERT generates contextual embeddings used for clustering and analysis
 **Supabase Backend Storage**
 - Embeddings and cleaned records are stored in Supabase for retrieval and downstream modeling
 **Similarity Search & Retrieval**
 - Vector similarity search is used to find related fraud cases and surface clusters of similar activity.
-- DBSCAN finds clusters and noise that could indicate specific trends in fraud emergence
+- DBSCAN/HDBSCAN identifies clusters of related fraud signals and isolates noise points that may indicate emerging or anomalous activity
 **Unique Measurements for Emerging Threats**
   - Drift measures the change in the clusters centroid movement, which can indicate changes to emerging threat (i.e, phone scams become AI-powered phone scams)
   - Growth measures number of new articles within the cluster
@@ -90,13 +106,14 @@ To support storage and querying outside of the notebook, we set up a Supabase ba
 This allows us to move beyond local notebook storage and keep all fraud records in one place that the rest of the system can access.
 
 **How it fits into the workflow**
-1. Cleaned fraud data is created in Python
-2. Records and embeddings are inserted into Supabase
-3. Supabase stores the data with unique IDs
-4. The query layer retrieves records for:
-  - similarity search
-  - BERT embeddings + DBSCAN to link emerging threats
-  - RAG-based insights
+1. Raw fraud data is ingested and cleaned (Data Pipeline)
+2. Cleaned records are stored in Supabase
+3. Embeddings are generated and stored
+4. Supabase serves as the central data layer
+5. The system retrieves records for:
+   - similarity search
+   - clustering and trend detection
+   - RAG-based insight generation
 
 This backend layer keeps the data organized and makes it easier to connect the modeling pipeline to a future dashboard.
 
