@@ -87,6 +87,7 @@ This ensures all downstream embedding and modeling steps operate on clean, struc
         - 0-30 Days is "Emerging"
         - 30-90 Days is "Trending"
         - Beyond 180 Days is "Established"
+    
 **Cluster Tracking & Stage Labeling**
 Each processed fraud signal includes:
 - document ID
