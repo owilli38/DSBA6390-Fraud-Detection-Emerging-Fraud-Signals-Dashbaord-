@@ -1,5 +1,5 @@
 """
-vizdemov4.0.5.py — Pickaxe Analytics: Fraud Intelligence Dashboard
+vizdemov4.0.6.py — Pickaxe Analytics: Fraud Intelligence Dashboard
 ====================================================================
 
 A Streamlit-based fraud intelligence application that combines semantic search,
