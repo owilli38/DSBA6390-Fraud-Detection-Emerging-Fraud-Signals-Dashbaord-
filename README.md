@@ -1,155 +1,259 @@
-DSBA6390-Fraud-Detection-Emerging-Fraud-Signals-Dashbaord-
-Final capstone project for MS in Data Science and Business Analytics 
+# DSBA6390-Fraud-Detection-Emerging-Fraud-Signals-Dashboard
 
-Project Members: Owen Williamson, Anders Pierson, Baran Narravula, Declan O'Halloran, and Rituparna Bhattacharya 
+Final capstone project for the MS in Data Science and Business Analytics
 
+Project Members: Owen Williamson, Anders Pierson, Baran Narravula, Declan O'Halloran, and Rituparna Bhattacharya
 
-**Overview**
-This project is an intelligence-driven fraud R&D pipeline designed to identify emerging financial fraud patterns using publicly available data sources. The system focuses on early signal detection, trend analysis, and contextual insights to support proactive fraud research.
+---
 
-**Product Goals**
-- Detect emerging fraud patterns from public consumer and regulatory data
-- Aggregate signals across multiple authoritative sources
-- Support fraud research through structured analysis and visualization
-  
+## Overview
 
-**Scope Boundaries**
-**In Scope:**
-- Public fraud and complaint data analysis
-- Trend identification and exploratory analytics
-- Research-oriented insights and visualization
+This project is an intelligence-driven fraud research and development pipeline designed to identify emerging financial fraud patterns using publicly available data sources. The system focuses on early signal detection, trend analysis, and contextual insights to support proactive fraud research.
 
-**Out of Scope:**
-- Real-time transaction-level fraud detection
-- Production-grade ML deployment
-- Access to proprietary or sensitive data
+---
 
+## Product Goals
 
- **High-Level Workflow**
-1. Ingest public fraud-related datasets (Data Pipeline)
-2. Clean and normalize data across sources (Data Pipeline)
+* Detect emerging fraud patterns from public consumer and regulatory data
+* Aggregate signals across multiple authoritative sources
+* Support fraud research through structured analysis and visualization
+
+---
+
+## Scope Boundaries
+
+### In Scope
+
+* Public fraud and complaint data analysis
+* Trend identification and exploratory analytics
+* Research-oriented insights and visualization
+
+### Out of Scope
+
+* Real-time transaction-level fraud detection
+* Production-grade ML deployment
+* Access to proprietary or sensitive data
+
+---
+
+## High-Level Workflow
+
+1. Ingest public fraud-related datasets
+2. Clean and normalize data across sources
 3. Store structured data in Supabase for downstream use
-4. Generate semantic embeddings and representations (Embedding Pipeline)
+4. Generate semantic embeddings and representations
 5. Cluster and analyze fraud signals over time
 6. Generate insights on emerging fraud patterns
 
+---
 
-**MVP Constraints**
-- Uses only publicly available and aggregated data
-- AI/LLM usage limited by API capacity and cost constraints
-- Focused on research feasibility rather than production scalability
+## MVP Constraints
 
-**Technology Stack**
-**Current:**
-- Python (Pandas, NumPy)
-- Jupyter Notebook
-- Data visualization libraries
-- Supabase (data storage and retrieval)
-- Google Gemini API (embedding generation)
-- Hugging Face Transformers (BERT embeddings)
-- Scikit-learn (clustering, preprocessing)
+* Uses only publicly available and aggregated data
+* AI/LLM usage limited by API capacity and cost constraints
+* Focused on research feasibility rather than production scalability
 
-**Exploratory:**
-- LLM APIs for research augmentation
-- Supabase for data storage and visualization
+---
 
+## Technology Stack
 
-**Fraud Signal Processing & Embedding Pipeline**
+### Current
 
-To support emerging fraud signal detection, we built a lightweight pipeline that converts cleaned fraud datasets into semantic embeddings, clustered signals, and explainable insights.
+* Python (Pandas, NumPy)
+* Jupyter Notebook
+* Data visualization libraries
+* Supabase (data storage and retrieval)
+* Google Gemini API (embedding generation and RAG)
+* Hugging Face Transformers (BERT embeddings)
+* Scikit-learn (clustering and preprocessing)
 
-**Pipeline Steps**
-**Data Ingestion & Cleaning**
-Before embeddings are generated, all raw datasets are processed through a data ingestion pipeline:
+### Exploratory
 
-- Data is loaded from CSV, JSON, and text sources (FTC, CFPB, OCC, etc.)
-- News and blog sites are scrapped on a batch, daily schedule for retrieving new articles with relevant metadata 
-- Records are standardized into a unified schema
-- Text fields are cleaned and normalized for consistency: lower casing and normalizing white space
-- Duplicate records are removed using unique identifiers
-- Missing or incomplete records are filtered out
-- 
-This ensures all downstream embedding and modeling steps operate on clean, structured data.
+* LLM APIs for research augmentation
+* Extended Supabase integration for analytics workflows
 
-**Embedding Generation (Gemini)**
-- Each record is converted into a semantic embedding using Google Gemini embedding models so fraud cases can be compared based on meaning instead of keywords.
-- BERT generates contextual embeddings used for clustering and analysis
-**Supabase Backend Storage**
-- Embeddings and cleaned records are stored in Supabase for retrieval and downstream modeling
-**Similarity Search & Retrieval**
-- Vector similarity search is used to find related fraud cases and surface clusters of similar activity.
-- DBSCAN/HDBSCAN identifies clusters of related fraud signals and isolates noise points that may indicate emerging or anomalous activity
-**Unique Measurements for Emerging Threats**
-  - Drift measures the change in the clusters centroid movement, which can indicate changes to emerging threat (i.e, phone scams become AI-powered phone scams)
-  - Growth measures number of new articles within the cluster
-  - Acceleration measures the difference in growth from previous week to current week to signify if topic is becoming a growing/decline threat
-  - Age Days is used to classify the newness of a fraud threat
-        - 0-30 Days is "Emerging"
-        - 30-90 Days is "Trending"
-        - Beyond 180 Days is "Established"
-    
-**Cluster Tracking & Stage Labeling**
-Each processed fraud signal includes:
-- document ID
-- source
-- cleaned text
-- embedding representation
-- cluster assignment
-- supporting article or nearest representative article
-- temporal metrics such as growth, drift, acceleration, and age_days
-- stage label (for example: Emerging, Trending, Stable, or Established)
-**RAG-Based Fraud Insights (Gemini LLM)**
-- Retrieved records are passed into a Gemini-based RAG workflow to generate short summaries, patterns, and evidence-backed insights.
+---
 
-**Supabase Backend Integration**
+## Fraud Signal Processing & Embedding Pipeline
 
-To support storage and querying outside of the notebook, we set up a Supabase backend that connects directly to our Python workflow.
+To support emerging fraud signal detection, the system converts cleaned fraud datasets into semantic embeddings, clustered signals, and explainable insights.
 
-- Cleaned fraud records and embeddings are inserted into Supabase tables
-- Read and write operations were tested and validated from Python
-- Stored records include document ID, text content, and embedding data
-- Queries return structured data that can be used for similarity search, ranking, and RAG steps
+### Data Ingestion & Cleaning
 
-This allows us to move beyond local notebook storage and keep all fraud records in one place that the rest of the system can access.
+* Load data from CSV, JSON, and text sources (FTC, CFPB, OCC, etc.)
+* Scrape news and blog sources on a batch schedule
+* Standardize records into a unified schema
+* Clean and normalize text (lowercasing, whitespace normalization)
+* Remove duplicate records using unique identifiers
+* Filter incomplete or missing records
 
-**How it fits into the workflow**
-1. Raw fraud data is ingested and cleaned (Data Pipeline)
-2. Cleaned records are stored in Supabase
-3. Embeddings are generated and stored
-4. Supabase serves as the central data layer
-5. The system retrieves records for:
-   - similarity search
-   - clustering and trend detection
-   - RAG-based insight generation
+This ensures all downstream modeling operates on consistent, structured data.
 
-This backend layer keeps the data organized and makes it easier to connect the modeling pipeline to a future dashboard.
+---
 
+### Embedding Generation
 
-**Output**
+* Each record is converted into a semantic embedding using Gemini models
+* BERT embeddings are generated for clustering and contextual analysis
+
+---
+
+### Supabase Backend Storage
+
+* Cleaned records and embeddings are stored in Supabase
+* Supports structured queries, retrieval, and downstream workflows
+
+---
+
+### Similarity Search & Clustering
+
+* Vector similarity search identifies related fraud cases
+* DBSCAN/HDBSCAN groups similar fraud signals
+* Noise points may indicate emerging or anomalous activity
+
+---
+
+### Unique Measurements for Emerging Threats
+
+* Drift: Measures changes in cluster meaning over time
+* Growth: Number of new articles within a cluster
+* Acceleration: Change in growth rate between time periods
+* Age Days:
+
+  * 0–30 Days: Emerging
+  * 30–90 Days: Trending
+  * Beyond 90 Days: Established
+
+---
+
+### Cluster Tracking & Stage Labeling
+
+Each fraud signal includes:
+
+* document ID
+* source
+* cleaned text
+* embedding representation
+* cluster assignment
+* supporting article
+* temporal metrics (growth, drift, acceleration, age_days)
+* stage label (Emerging, Trending, Stable, Established)
+
+---
+
+### RAG-Based Fraud Insights
+
+* Retrieved records are passed into a Gemini-based RAG workflow
+* Generates summaries, patterns, and evidence-backed insights
+
+---
+
+## Supabase Backend Integration
+
+The backend supports storage, retrieval, and analysis across the full pipeline:
+
+* Stores fraud records and embeddings
+* Enables similarity search and clustering workflows
+* Serves as the central data layer for dashboard integration
+
+### Workflow Integration
+
+1. Raw data ingestion and cleaning
+2. Storage in Supabase
+3. Embedding generation
+4. Retrieval for similarity search, clustering, and RAG insights
+
+---
+
+## Output
+
 Each generated fraud signal includes:
-- document ID
-- similarity score
-- supporting text evidence
-- severity classification
-- ranking score
 
-This output feeds directly into dashboards and research analysis.
+* document ID
+* similarity score
+* supporting text evidence
+* severity classification
+* ranking score
 
+This output feeds directly into dashboard visualizations and research workflows.
 
-**Current Progress**
-- Built ingestion pipeline for FTC and CFPB datasets
-- Cleaned and standardized data for consistent processing
-- Set up Supabase backend and confirmed read/write from Python
-- Generated embeddings using the Gemini API
-- Ran initial similarity search and ranking models on fraud records
-- Integrated an early-stage RAG workflow for summarizing fraud signals
+---
 
-**Data Sources**
+## Current Progress
 
-We use publicly available news and blog content from four primary sources:
-- ABA (American Bankers Association)
-- PYMNTS
-- TechCrunch
-- ACFE (Association of Certified Fraud Examiners)
+* Built ingestion pipeline for FTC and CFPB datasets
+* Cleaned and standardized data across sources
+* Implemented Supabase backend and validated read/write operations
+* Generated embeddings using Gemini API
+* Performed clustering and similarity analysis
+* Integrated a RAG-based workflow for fraud signal summarization
 
-These sources were selected to provide a mix of banking, payments, fraud, and technology coverage for identifying emerging fraud-related patterns.
+---
+
+## Key Results
+
+* Processed over 1,400 fraud-related articles
+* Identified over 100 fraud signal clusters
+* Detected 40+ emerging fraud themes
+* Achieved clustering silhouette score of approximately 0.54
+* Enabled semantic retrieval with average similarity around 0.67
+
+---
+
+## Data Sources
+
+Publicly available news and blog content from:
+
+* ABA (American Bankers Association)
+* PYMNTS
+* TechCrunch
+* ACFE (Association of Certified Fraud Examiners)
+
+---
+
+## Final Deliverables
+
+The following documents are included in the `docs/` folder:
+
+* Configuration & Access Guide
+* Data Documentation
+* Model Card
+* RAG Documentation
+* System Overview & Architecture Diagram
+* Executive Summary
+* Test Plan
+* User Guide
+* Runbook & Operations Guide
+
+---
+
+## Team Roles & Responsibilities
+
+* Anders Pierson — Project Lead (sponsor liaison, scope, timelines, integration, testing)
+* Rituparna Bhattacharya — Data Lead (data acquisition, cleaning, documentation, quality workflow)
+* Owen Williamson — Model/AI Lead (ML, NLP, RAG development, integration, evaluation)
+* Declan O’Halloran — Product/Engineering Lead (dashboard, visualization, application development, integration)
+* Baran Narravula — Documentation & Communication Lead (README, updates, demo narrative, final deliverables)
+
+---
+
+## Limitations
+
+* Batch-based ingestion rather than real-time updates
+* Limited coverage of external data sources
+* No supervised evaluation dataset for validation
+* Heuristic-based stage classification
+* Prototype-level system not designed for production deployment
+
+---
+
+## Future Work
+
+* Implement real-time or scheduled automated ingestion
+* Expand data source coverage
+* Improve NLP enrichment (NER, tagging, classification)
+* Develop formal evaluation benchmarks
+* Add authentication and multi-user support
+* Integrate with enterprise fraud monitoring systems
+
+---
